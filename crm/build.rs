@@ -12,5 +12,7 @@ fn main() -> Result<()> {
         .out_dir("src/pb")
         .compile_protos(&["../protos/crm.proto"], &["../protos"])?;
 
+    println!("cargo:rerun-if-changed=../protos/crm.proto");
+
     Ok(())
 }
