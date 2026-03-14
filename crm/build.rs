@@ -10,9 +10,9 @@ fn main() -> Result<()> {
     let config = tonic_prost_build::configure();
     config
         .out_dir("src/pb")
-        .compile_protos(&["../protos/crm.proto"], &["../protos"])?;
+        .compile_protos(&["../protos/crm/crm.proto"], &["../protos"])?;
 
-    println!("cargo:rerun-if-changed=../protos/crm.proto");
+    println!("cargo:rerun-if-changed=../protos/crm/crm.proto");
 
     Ok(())
 }
