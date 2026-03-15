@@ -10,8 +10,8 @@ prost-build = "0.14.1"
 prost-types = "0.14.1"
 serde = { version = "1.0.228", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["postgres", "runtime-tokio-rustls", "chrono"] }
+tokio = { version = "1.47.1", features = ["rt", "rt-multi-thread", "macros"] }
 tonic = { version = "0.14.2", features = ["zstd"] }
 # tonic-build = "0.14.2"  # use tonic-prost-build instead
 tonic-prost-build = "0.14.2"
 tonic-prost = "0.14.2"
-tokio = { version = "1.47.1", features = ["rt", "rt-multi-thread", "macros"] }

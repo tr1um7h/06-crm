@@ -15,11 +15,12 @@ sqlx = { workspace = true }
 serde = { workspace = true }
 tokio = { workspace = true }
 tonic = { workspace = true }
-tonic-prost = { workspace = true }
+# tonic-prost = { workspace = true }
 
 [build-dependencies]
 anyhow = { workspace = true }
 prost-build = { workspace = true }
+# proto-builder-trait = "0.6.2"
 # tonic-build = { workspace = true }
 tonic-prost-build = { workspace = true }
 
