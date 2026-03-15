@@ -1,3 +1,6 @@
+mod abi;
+mod config;
+
 pub mod pb;
 
 use futures::Stream;
@@ -5,16 +8,27 @@ use pb::{
     QueryRequest, RawQueryRequest, User,
     user_stats_server::{UserStats, UserStatsServer},
 };
-use std::pin::Pin;
+use sqlx::PgPool;
+use std::{ops::Deref, pin::Pin, sync::Arc};
 use tonic::{Request, Response, Status, async_trait};
 
-#[derive(Default)]
-pub struct UserStatsService {}
+pub use config::AppConfig;
 
 type ServiceResult<T> = Result<Response<T>, Status>;
 
 // Stream: futures::Stream
 type ResponseStream = Pin<Box<dyn Stream<Item = Result<User, Status>> + Send>>;
+
+#[derive(Clone)]
+pub struct UserStatsService {
+    inner: Arc<UserStatsServiceInner>,
+}
+
+#[allow(unused)]
+pub struct UserStatsServiceInner {
+    config: AppConfig,
+    pool: PgPool,
+}
 
 #[async_trait]
 impl UserStats for UserStatsService {
@@ -33,8 +47,26 @@ impl UserStats for UserStatsService {
     }
 }
 
-impl From<UserStatsService> for UserStatsServer<UserStatsService> {
-    fn from(svc: UserStatsService) -> Self {
-        UserStatsServer::new(svc)
+impl UserStatsService {
+    pub async fn new(config: AppConfig) -> Self {
+        let pool = PgPool::connect(&config.server.db_url)
+            .await
+            .expect("Failed to connect to db");
+
+        Self {
+            inner: Arc::new(UserStatsServiceInner { config, pool }),
+        }
+    }
+
+    pub fn into_server(self) -> UserStatsServer<UserStatsService> {
+        UserStatsServer::new(self)
+    }
+}
+
+impl Deref for UserStatsService {
+    type Target = UserStatsServiceInner;
+
+    fn deref(&self) -> &Self::Target {
+        &self.inner
     }
 }
