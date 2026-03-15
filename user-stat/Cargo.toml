@@ -19,6 +19,9 @@ tonic = { workspace = true }
 tonic-prost = { workspace = true }
 futures = "0.3.32"
 serde_yaml = "0.9.34"
+itertools = "0.14.0"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
 
 [build-dependencies]
 anyhow = { workspace = true }

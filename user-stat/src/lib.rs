@@ -35,15 +35,17 @@ impl UserStats for UserStatsService {
     type QueryStream = ResponseStream;
     type RawQueryStream = ResponseStream;
 
-    async fn query(&self, _request: Request<QueryRequest>) -> ServiceResult<Self::QueryStream> {
-        unimplemented!()
+    async fn query(&self, request: Request<QueryRequest>) -> ServiceResult<Self::QueryStream> {
+        let query = request.into_inner();
+        self.query(query).await
     }
 
     async fn raw_query(
         &self,
-        _request: Request<RawQueryRequest>,
+        request: Request<RawQueryRequest>,
     ) -> ServiceResult<Self::RawQueryStream> {
-        unimplemented!()
+        let query = request.into_inner();
+        self.raw_query(query).await
     }
 }
 
