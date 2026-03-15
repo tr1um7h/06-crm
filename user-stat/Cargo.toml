@@ -22,7 +22,7 @@ futures = "0.3.32"
 [build-dependencies]
 anyhow = { workspace = true }
 prost-build = { workspace = true }
-# proto-builder-trait = "0.6.2"
+proto-builder-trait = {git = "https://github.com/tr1um7h/proto-builder-trait", branch = "main"}
 # tonic-build = { workspace = true }
 tonic-prost-build = { workspace = true }
 
