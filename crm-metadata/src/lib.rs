@@ -1,5 +1,6 @@
 pub mod pb;
 
+mod abi;
 mod config;
 use std::pin::Pin;
 
@@ -25,7 +26,7 @@ impl Metadata for MetadataService {
         &self,
         request: Request<Streaming<MaterializeRequest>>,
     ) -> ServiceResult<ResponseStream> {
-        todo!()
+        self.materialize(request).await
     }
 }
 
