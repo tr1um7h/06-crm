@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package meta_data;
+
+import "meta_data/messages.proto";
+
+service Metadata {
+    rpc Materialize (stream MaterializeRequest) returns (stream Content) {}
+}

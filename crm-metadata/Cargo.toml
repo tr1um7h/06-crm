@@ -5,3 +5,27 @@ license = "MIT"
 edition = "2024"
 
 [dependencies]
+anyhow = { workspace = true }
+chrono = { workspace = true }
+derive_builder = "0.20.2"
+fake = { version = "4.4.0", features = ["derive", "chrono"] }
+prost = { workspace = true }
+prost-types = { workspace = true }
+rand = "0.9.2"
+sqlx = { workspace = true }
+serde = { workspace = true }
+tokio = { workspace = true }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+futures = "0.3.32"
+serde_yaml = "0.9.34"
+itertools = "0.14.0"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[build-dependencies]
+anyhow = { workspace = true }
+prost-build = { workspace = true }
+proto-builder-trait = {git = "https://github.com/tr1um7h/proto-builder-trait", branch = "main"}
+# tonic-build = { workspace = true }
+tonic-prost-build = { workspace = true }
