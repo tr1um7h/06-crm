@@ -1,4 +1,5 @@
 use anyhow::Result;
+// use proto_builder_trait::tonic_prost::BuilderAttributes;
 use std::fs;
 
 fn main() -> Result<()> {
@@ -6,6 +7,12 @@ fn main() -> Result<()> {
 
     tonic_prost_build::configure()
         .out_dir("src/pb")
+        // .with_serde(
+        //     &["Content", "ContentType", "Publisher"],
+        //     true,
+        //     true,
+        //     Some(&[r#"#[serde(rename_all = "camelCase")]"#]),
+        // )
         .compile_protos(
             &[
                 "../protos/meta_data/messages.proto",

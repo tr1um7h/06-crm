@@ -8,7 +8,7 @@ use prost_types::Timestamp;
 use rand::Rng;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::ReceiverStream;
-use tonic::Response;
+use tonic::{Response, Status};
 
 use crate::{
     MetadataService, ResponseStream, ServiceResult,
@@ -20,10 +20,7 @@ const CHANNEL_SIZE: usize = 1024;
 impl MetadataService {
     pub async fn meterialize(
         &self,
-        mut stream: impl Stream<Item = Result<MaterializeRequest, tonic::Status>>
-        + Send
-        + Unpin
-        + 'static,
+        mut stream: impl Stream<Item = Result<MaterializeRequest, Status>> + Send + Unpin + 'static,
     ) -> ServiceResult<ResponseStream> {
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         tokio::spawn(async move {

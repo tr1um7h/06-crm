@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package crm_send;
+
+import "crm_send/messages.proto";
+
+service Notification {
+    rpc Send(stream SendRequest) returns (stream SendResponse) {}
+}
