@@ -72,3 +72,33 @@ impl Deref for UserStatsService {
         &self.inner
     }
 }
+
+#[cfg(feature = "test_utils")]
+pub mod test_utils {
+
+    use chrono::Utc;
+
+    use crate::pb::{IdQuery, TimeQuery};
+    use prost_types::Timestamp;
+
+    pub fn id(id: &[u32]) -> IdQuery {
+        IdQuery { ids: id.to_vec() }
+    }
+
+    pub fn tq(lower: Option<i64>, upper: Option<i64>) -> TimeQuery {
+        TimeQuery {
+            lower: lower.map(to_ts),
+            upper: upper.map(to_ts),
+        }
+    }
+
+    pub fn to_ts(days: i64) -> Timestamp {
+        let dt = Utc::now()
+            .checked_sub_signed(chrono::Duration::days(days))
+            .unwrap();
+        Timestamp {
+            seconds: dt.timestamp(),
+            nanos: dt.timestamp_subsec_nanos() as i32,
+        }
+    }
+}

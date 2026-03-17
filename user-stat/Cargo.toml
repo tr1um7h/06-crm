@@ -4,6 +4,9 @@ version = "0.1.0"
 license = "MIT"
 edition = "2024"
 
+[features]
+default = []
+test_utils = []
 
 [dependencies]
 anyhow = { workspace = true }
@@ -33,3 +36,4 @@ tonic-prost-build = { workspace = true }
 [dev-dependencies]
 fake = { version = "4.4.0", features = ["derive", "chrono"] }
 nanoid = "0.4.0"
+user-stat = { workspace = true, features = ["test_utils"] }

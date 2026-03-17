@@ -5,6 +5,8 @@ resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.100"
 chrono = { version = "0.4.42", features = ["serde"] }
+crm-metadata = { path = "crm-metadata" }
+crm-send = { path = "crm-send" }
 derive_builder = "0.20.2"
 fake = { version = "4.4.0", features = ["derive", "chrono"] }
 futures = "0.3.32"
@@ -25,3 +27,4 @@ tonic-prost-build = "0.14.2"
 tonic-prost = "0.14.2"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+user-stat = { path = "user-stat" }

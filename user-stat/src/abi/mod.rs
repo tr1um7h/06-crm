@@ -93,7 +93,8 @@ mod tests {
     use super::*;
     use crate::{
         AppConfig, UserStatsService,
-        pb::{IdQuery, QueryRequestBuilder, TimeQuery},
+        pb::QueryRequestBuilder,
+        test_utils::{id, tq},
     };
     use anyhow::Result;
     use futures::StreamExt;
@@ -143,26 +144,5 @@ mod tests {
         // print if failed
         assert_eq!(i, 3);
         Ok(())
-    }
-
-    fn id(id: &[u32]) -> IdQuery {
-        IdQuery { ids: id.to_vec() }
-    }
-
-    fn tq(lower: Option<i64>, upper: Option<i64>) -> TimeQuery {
-        TimeQuery {
-            lower: lower.map(to_ts),
-            upper: upper.map(to_ts),
-        }
-    }
-
-    fn to_ts(days: i64) -> Timestamp {
-        let dt = Utc::now()
-            .checked_sub_signed(chrono::Duration::days(days))
-            .unwrap();
-        Timestamp {
-            seconds: dt.timestamp(),
-            nanos: dt.timestamp_subsec_nanos() as i32,
-        }
     }
 }
