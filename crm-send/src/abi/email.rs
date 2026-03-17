@@ -35,7 +35,7 @@ impl From<EmailMessage> for SendRequest {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test_utils")]
 mod tests {
     use crate::pb::EmailMessage;
     use fake::{

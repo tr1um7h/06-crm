@@ -4,11 +4,15 @@ version = "0.1.0"
 license = "MIT"
 edition = "2024"
 
+[features]
+default = []
+test_utils = ["fake"]
+
 [dependencies]
 anyhow = { workspace = true }
 chrono = { workspace = true }
 derive_builder = { workspace = true }
-fake = { workspace = true }
+fake = { workspace = true, optional = true }
 futures = { workspace = true }
 itertools = { workspace = true }
 prost = { workspace = true }
@@ -31,3 +35,7 @@ prost-build = { workspace = true }
 proto-builder-trait = { workspace = true }
 # tonic-build = { workspace = true }
 tonic-prost-build = { workspace = true }
+user-stat = { workspace = true }
+
+[dev-dependencies]
+crm-send = { workspace = true, features = ["test_utils"]}

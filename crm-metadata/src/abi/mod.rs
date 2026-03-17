@@ -18,14 +18,14 @@ use crate::{
 const CHANNEL_SIZE: usize = 1024;
 
 impl MetadataService {
-    pub async fn meterialize(
+    pub async fn materialize(
         &self,
         mut stream: impl Stream<Item = Result<MaterializeRequest, Status>> + Send + Unpin + 'static,
     ) -> ServiceResult<ResponseStream> {
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         tokio::spawn(async move {
             while let Some(Ok(req)) = stream.next().await {
-                let content = Content::meterialize(req.id);
+                let content = Content::materialize(req.id);
                 tx.send(Ok(content)).await.expect("Should send ok")
             }
         });
@@ -37,7 +37,7 @@ impl MetadataService {
 }
 
 impl Content {
-    pub fn meterialize(id: u32) -> Self {
+    pub fn materialize(id: u32) -> Self {
         let mut rng = rand::rng();
         Content {
             id,
@@ -89,7 +89,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn meterialize_should_work() -> Result<()> {
+    async fn materialize_should_work() -> Result<()> {
         let config = config::AppConfig::load()?;
         let service = MetadataService::new(config);
 
@@ -99,7 +99,7 @@ mod tests {
             Ok(MaterializeRequest { id: 3 }),
         ]);
 
-        let response = service.meterialize(stream).await?;
+        let response = service.materialize(stream).await?;
         let ret = response.into_inner().collect::<Vec<_>>().await;
 
         assert_eq!(ret.len(), 3);

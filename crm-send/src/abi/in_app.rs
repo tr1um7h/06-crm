@@ -34,7 +34,7 @@ impl From<InAppMessage> for SendRequest {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test_utils")]
 mod tests {
     use super::*;
     use fake::{Fake, faker::lorem::en::Sentence};

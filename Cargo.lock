@@ -279,6 +279,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "crm-send",
  "derive_builder",
  "fake",
  "futures",
@@ -298,6 +299,7 @@ dependencies = [
  "tonic-prost-build",
  "tracing",
  "tracing-subscriber",
+ "user-stat",
  "uuid",
 ]
 

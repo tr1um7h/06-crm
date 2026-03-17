@@ -34,7 +34,7 @@ impl From<SmsMessage> for SendRequest {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test_utils")]
 mod tests {
     use crate::pb::SmsMessage;
     use fake::{

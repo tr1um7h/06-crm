@@ -25,8 +25,9 @@ impl Metadata for MetadataService {
     async fn materialize(
         &self,
         request: Request<Streaming<MaterializeRequest>>,
-    ) -> ServiceResult<ResponseStream> {
-        self.materialize(request).await
+    ) -> ServiceResult<Self::MaterializeStream> {
+        let query = request.into_inner();
+        self.materialize(query).await
     }
 }
 
