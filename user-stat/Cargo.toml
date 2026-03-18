@@ -6,7 +6,7 @@ edition = "2024"
 
 [features]
 default = []
-test_utils = []
+test_utils = ["sqlx-db-tester"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -20,6 +20,7 @@ rand = { workspace = true }
 serde = { workspace = true }
 serde_yaml = { workspace = true }
 sqlx = { workspace = true }
+sqlx-db-tester = { version = "0.7.1", optional = true }
 tokio = { workspace = true }
 tonic = { workspace = true }
 tonic-prost = { workspace = true }

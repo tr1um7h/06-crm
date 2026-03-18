@@ -76,10 +76,53 @@ impl Deref for UserStatsService {
 #[cfg(feature = "test_utils")]
 pub mod test_utils {
 
+    use std::{env, path::Path};
+
     use chrono::Utc;
 
     use crate::pb::{IdQuery, TimeQuery};
     use prost_types::Timestamp;
+
+    use super::*;
+    use anyhow::Result;
+    use sqlx::{Executor, PgPool};
+    use sqlx_db_tester::TestPg;
+
+    impl UserStatsService {
+        pub async fn new_for_test() -> Result<(TestPg, Self)> {
+            let config = AppConfig::load()?;
+            let post = config.server.db_url.rfind('/').expect("invalid db_url");
+            let server_url = &config.server.db_url[..post];
+            let (tdb, pool) = get_test_pool(Some(server_url)).await;
+            let svc = Self {
+                inner: Arc::new(UserStatsServiceInner { config, pool }),
+            };
+            Ok((tdb, svc))
+        }
+    }
+
+    pub async fn get_test_pool(url: Option<&str>) -> (TestPg, PgPool) {
+        let url = match url {
+            Some(url) => url.to_string(),
+            None => "postgres://postgres:postgres@localhost:5432".to_string(),
+        };
+        let p = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap()).join("migrations");
+        let tdb = TestPg::new(url, p);
+        let pool = tdb.get_pool().await;
+
+        // run prepared sql to insert test dat
+        let sql = include_str!("../fixtures/data.sql").split(';');
+        let mut ts = pool.begin().await.expect("begin transaction failed");
+        for s in sql {
+            if s.trim().is_empty() {
+                continue;
+            }
+            ts.execute(s).await.expect("execute sql failed");
+        }
+        ts.commit().await.expect("commit transaction failed");
+
+        (tdb, pool)
+    }
 
     pub fn id(id: &[u32]) -> IdQuery {
         IdQuery { ids: id.to_vec() }
@@ -93,7 +136,10 @@ pub mod test_utils {
     }
 
     pub fn to_ts(days: i64) -> Timestamp {
-        let dt = Utc::now()
+        // let dt = Utc::now()
+        let dt: chrono::DateTime<Utc> = "2024-06-01T00:00:00Z"
+            .parse::<chrono::DateTime<Utc>>()
+            .unwrap()
             .checked_sub_signed(chrono::Duration::days(days))
             .unwrap();
         Timestamp {

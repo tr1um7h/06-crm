@@ -92,7 +92,7 @@ fn ids_query(name: &str, ids: Vec<u32>) -> String {
 mod tests {
     use super::*;
     use crate::{
-        AppConfig, UserStatsService,
+        UserStatsService,
         pb::QueryRequestBuilder,
         test_utils::{id, tq},
     };
@@ -101,10 +101,9 @@ mod tests {
 
     #[tokio::test]
     async fn raw_query_should_work() -> Result<()> {
-        let config = AppConfig::load().expect("should load config ok");
-        let svc = UserStatsService::new(config).await;
+        let (_tdb, svc) = UserStatsService::new_for_test().await?;
         let request = RawQueryRequest {
-            query: "SELECT email, name FROM user_stats WHERE created_at > '2026-02-09' LIMIT 10;"
+            query: "SELECT email, name FROM user_stats WHERE created_at > '2024-01-01' LIMIT 10;"
                 .to_string(),
         };
         let mut stream = svc.raw_query(request).await?.into_inner();
@@ -122,15 +121,11 @@ mod tests {
 
     #[tokio::test]
     async fn query_should_work() -> Result<()> {
-        let config = AppConfig::load().expect("Failed to load config");
-        let svc = UserStatsService::new(config).await;
+        let (_tdb, svc) = UserStatsService::new_for_test().await?;
         let query = QueryRequestBuilder::default()
             .timestamp(("created_at".to_string(), tq(Some(120), None)))
             .timestamp(("last_visited_at".to_string(), tq(Some(90), None)))
-            .id((
-                "viewed_but_not_started".to_string(),
-                id(&[124760872, 1776987229, 1944726278]),
-            ))
+            .id(("viewed_but_not_started".to_string(), id(&[207348])))
             .build()
             .unwrap();
         let mut stream = svc.query(query).await?.into_inner();
@@ -142,7 +137,7 @@ mod tests {
         }
 
         // print if failed
-        assert_eq!(i, 3);
+        assert_eq!(i, 1);
         Ok(())
     }
 }
