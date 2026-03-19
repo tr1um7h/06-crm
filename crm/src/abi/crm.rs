@@ -1,22 +1,45 @@
-use crate::pb::User;
+use anyhow::Result;
+use crm_metadata::MetadataService;
+use crm_send::NotificationService;
+use tonic::{async_trait, Request, Response, Status};
+use user_stat::UserStatsService;
 
-use prost_types::Timestamp;
-use std::time::SystemTime;
+use crate::pb::{
+    crm_server::Crm, RecallRequest, RecallResponse, RemindRequest, RemindResponse, WelcomeRequest,
+    WelcomeResponse,
+};
 
-impl User {
-    pub fn new(id: u64, name: &str, email: &str) -> Self {
-        let now = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap();
+#[allow(dead_code)]
+pub struct CrmService {
+    user_stat: UserStatsService,
+    notification: NotificationService,
+    metadata: MetadataService,
+}
 
-        User {
-            id,
-            name: name.to_string(),
-            email: email.to_string(),
-            created_at: Some(Timestamp {
-                seconds: now.as_secs() as i64,
-                nanos: now.subsec_nanos() as i32,
-            }),
-        }
+#[async_trait]
+impl Crm for CrmService {
+    async fn welcome(
+        &self,
+        _request: Request<WelcomeRequest>,
+    ) -> Result<Response<WelcomeResponse>, Status> {
+        // let user = self.user_stat.get_user(request.id).await?;
+        // let message = format!("Welcome back, {}!", user.name);
+        // self.notification.send_email(user.email, &message).await?;
+        // Ok(WelcomeResponse { message })
+        unimplemented!()
+    }
+
+    async fn recall(
+        &self,
+        _request: Request<RecallRequest>,
+    ) -> Result<Response<RecallResponse>, Status> {
+        unimplemented!()
+    }
+
+    async fn remind(
+        &self,
+        _request: Request<RemindRequest>,
+    ) -> Result<Response<RemindResponse>, Status> {
+        unimplemented!()
     }
 }

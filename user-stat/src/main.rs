@@ -13,7 +13,7 @@ async fn main() -> Result<()> {
     let addr = format!("[::1]:{}", config.server.port)
         .parse()
         .expect("should parse addr ok");
-    info!("UserStatsServer is listening to {}", addr);
+    info!("UserStats Server is listening to {}", addr);
 
     let svc = UserStatsService::new(config).await.into_server();
     Server::builder().add_service(svc).serve(addr).await?;

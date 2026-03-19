@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package crm;
+
+import "crm/messages.proto";
+
+
+service Crm {
+    rpc Welcome(WelcomeRequest) returns (WelcomeResponse);
+    // last visited or watched
+    rpc Recall(RecallRequest) returns (RecallResponse);
+    // last watched, but have unfinished contents
+    rpc Remind(RemindRequest) returns (RemindResponse);
+}
