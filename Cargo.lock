@@ -241,18 +241,21 @@ dependencies = [
  "crm-metadata",
  "crm-send",
  "derive_builder",
+ "futures",
  "prost 0.14.3",
  "prost-types 0.14.3",
  "proto-builder-trait",
  "serde",
  "serde_yaml",
  "tokio",
+ "tokio-stream",
  "tonic",
  "tonic-prost",
  "tonic-prost-build",
  "tracing",
  "tracing-subscriber",
  "user-stat",
+ "uuid",
 ]
 
 [[package]]

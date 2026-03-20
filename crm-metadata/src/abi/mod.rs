@@ -55,6 +55,18 @@ impl Content {
             dislikes: rng.random_range(10..2000),
         }
     }
+
+    pub fn to_body(&self) -> String {
+        format!("Content: {:?}", self)
+    }
+}
+
+pub struct Tpl<'a>(pub &'a [Content]);
+
+impl<'a> Tpl<'a> {
+    pub fn to_body(&self) -> String {
+        format!("Content: {:?}", self.0)
+    }
 }
 
 impl Publisher {

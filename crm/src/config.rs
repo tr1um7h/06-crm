@@ -16,6 +16,7 @@ pub struct AuthConfig {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ServerConfig {
     pub port: u16,
+    pub sender_email: String,
     pub metadata: String,
     pub user_stats: String,
     pub notification: String,

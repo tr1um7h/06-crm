@@ -12,6 +12,7 @@ fn main() -> Result<()> {
         //     &["User.email", "User.name", "RawQueryRequest.query"],
         //     &[r#"#[builder(setter(into))]"#],
         // )
+        .with_type_attributes(&["MaterializeRequest"], &[r#"#[derive(Eq, Hash)]"#])
         .compile_protos(
             &["../protos/crm/messages.proto", "../protos/crm/rpc.proto"],
             &["../protos"],

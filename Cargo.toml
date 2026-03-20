@@ -28,3 +28,4 @@ tonic-prost = "0.14.2"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 user-stat = { path = "user-stat" }
+uuid = { version = "1.22.0", features = ["v4"] }

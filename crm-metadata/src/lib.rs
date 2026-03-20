@@ -1,6 +1,6 @@
 pub mod pb;
 
-mod abi;
+pub mod abi;
 mod config;
 use std::pin::Pin;
 
