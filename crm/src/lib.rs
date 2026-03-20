@@ -28,13 +28,13 @@ pub struct CrmService {
 impl Crm for CrmService {
     async fn welcome(
         &self,
-        _request: Request<WelcomeRequest>,
+        request: Request<WelcomeRequest>,
     ) -> Result<Response<WelcomeResponse>, Status> {
         // let user = self.user_stat.get_user(request.id).await?;
         // let message = format!("Welcome back, {}!", user.name);
         // self.notification.send_email(user.email, &message).await?;
         // Ok(WelcomeResponse { message })
-        unimplemented!()
+        self.welcome(request.into_inner()).await
     }
 
     async fn recall(

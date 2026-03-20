@@ -7,7 +7,7 @@ import "crm/messages.proto";
 
 service Crm {
     rpc Welcome(WelcomeRequest) returns (WelcomeResponse);
-    // last visited or watched
+    // last watched, give user something to watch
     rpc Recall(RecallRequest) returns (RecallResponse);
     // last watched, but have unfinished contents
     rpc Remind(RemindRequest) returns (RemindResponse);

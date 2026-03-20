@@ -13,6 +13,7 @@ fn main() -> Result<()> {
         //     true,
         //     Some(&[r#"#[serde(rename_all = "camelCase")]"#]),
         // )
+        // .with_type_attributes(&["MaterializeRequest"], &[r#"#[derive(Eq, Hash)]"#])
         .compile_protos(
             &[
                 "../protos/meta_data/messages.proto",

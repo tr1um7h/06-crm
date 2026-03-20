@@ -93,9 +93,7 @@ fn get_user_stats_query(name: &str, date: DateTime<Utc>) -> QueryRequest {
     QueryRequestBuilder::default()
         .timestamp((name.to_string(), tq))
         .build()
-        .expect("should build query request ok");
-
-    todo!()
+        .expect("should build query request ok")
 }
 
 fn gen_send_req(subject: String, sender: String, user: User, contents: &[Content]) -> SendRequest {

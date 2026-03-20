@@ -8,11 +8,10 @@ fn main() -> Result<()> {
     tonic_prost_build::configure()
         .out_dir("src/pb")
         .with_derive_builder(&["WelcomeRequest", "RecallRequest", "RemindRequest"], None)
-        // .with_field_attributes(
-        //     &["User.email", "User.name", "RawQueryRequest.query"],
-        //     &[r#"#[builder(setter(into))]"#],
-        // )
-        .with_type_attributes(&["MaterializeRequest"], &[r#"#[derive(Eq, Hash)]"#])
+        .with_field_attributes(
+            &["WelcomeRequest.content_ids"],
+            &[r#"#[builder(setter(each(name="content_id", into)))]"#],
+        )
         .compile_protos(
             &["../protos/crm/messages.proto", "../protos/crm/rpc.proto"],
             &["../protos"],

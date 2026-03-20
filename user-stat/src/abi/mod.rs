@@ -2,6 +2,7 @@ use chrono::{DateTime, TimeZone, Utc};
 use itertools::Itertools;
 use prost_types::Timestamp;
 use tonic::{Response, Status};
+use tracing::info;
 
 use crate::{
     ResponseStream, ServiceResult, UserStatsService,
@@ -28,10 +29,12 @@ impl UserStatsService {
             // use itertools::Itertools to join
             .join(" AND ");
 
-        sql.push_str(" AND ");
-        sql.push_str(&id_str);
+        if !id_str.is_empty() {
+            sql.push_str(" AND ");
+            sql.push_str(&id_str);
+        }
 
-        println!("Generated sql: {}", sql);
+        info!("Generated sql: {}", sql);
 
         self.raw_query(RawQueryRequest { query: sql }).await
     }
