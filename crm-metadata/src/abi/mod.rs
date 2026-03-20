@@ -1,9 +1,11 @@
+use std::collections::HashSet;
+
 use chrono::{DateTime, Duration, Utc};
 use fake::{
     Fake, Faker,
     faker::{chrono::en::DateTimeBetween, lorem::en::Sentence, name::en::Name},
 };
-use futures::{Stream, StreamExt};
+use futures::{Stream, StreamExt, stream};
 use prost_types::Timestamp;
 use rand::Rng;
 use tokio::sync::mpsc;
@@ -58,6 +60,13 @@ impl Content {
 
     pub fn to_body(&self) -> String {
         format!("Content: {:?}", self)
+    }
+}
+
+impl MaterializeRequest {
+    pub fn new_with_ids(ids: Vec<u32>) -> impl Stream<Item = Self> {
+        let reqs: HashSet<_> = ids.into_iter().map(|id| Self { id }).collect();
+        stream::iter(reqs)
     }
 }
 

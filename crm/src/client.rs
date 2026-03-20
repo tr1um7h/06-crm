@@ -15,7 +15,7 @@ async fn main() -> Result<()> {
 
     let req = WelcomeRequestBuilder::default()
         .id(Uuid::new_v4().to_string())
-        .interval(7u32)
+        .interval(90u32)
         .content_ids([1, 2, 3])
         .build()?;
 

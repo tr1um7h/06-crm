@@ -1,3 +1,5 @@
+use core::fmt;
+
 use chrono::{DateTime, TimeZone, Utc};
 use itertools::Itertools;
 use prost_types::Timestamp;
@@ -6,35 +8,12 @@ use tracing::info;
 
 use crate::{
     ResponseStream, ServiceResult, UserStatsService,
-    pb::{QueryRequest, RawQueryRequest, User},
+    pb::{QueryRequest, QueryRequestBuilder, RawQueryRequest, TimeQuery, User},
 };
 
 impl UserStatsService {
     pub async fn query(&self, query: QueryRequest) -> ServiceResult<ResponseStream> {
-        // generate sql based on query
-        let mut sql = "SELECT email, name FROM user_stats WHERE ".to_string();
-
-        let tm_str = query
-            .timestamps
-            .into_iter()
-            .map(|(k, v)| time_query(&k, v.lower, v.upper))
-            .join(" AND ");
-
-        sql.push_str(&tm_str);
-
-        let id_str = query
-            .ids
-            .into_iter()
-            .map(|(k, v)| ids_query(&k, v.ids))
-            // use itertools::Itertools to join
-            .join(" AND ");
-
-        if !id_str.is_empty() {
-            sql.push_str(" AND ");
-            sql.push_str(&id_str);
-        }
-
-        info!("Generated sql: {}", sql);
+        let sql = query.to_string();
 
         self.raw_query(RawQueryRequest { query: sql }).await
     }
@@ -53,6 +32,58 @@ impl UserStatsService {
         Ok(Response::new(Box::pin(futures::stream::iter(
             ret.into_iter().map(Ok),
         ))))
+    }
+}
+
+impl QueryRequest {
+    pub fn new_with_dt(name: &str, lower: DateTime<Utc>, upper: DateTime<Utc>) -> Self {
+        let ts: Timestamp = Timestamp {
+            seconds: lower.timestamp(),
+            nanos: 0,
+        };
+        let ts1 = Timestamp {
+            seconds: upper.timestamp(),
+            nanos: 0,
+        };
+        let tq = TimeQuery {
+            lower: Some(ts),
+            upper: Some(ts1),
+        };
+        QueryRequestBuilder::default()
+            .timestamp((name.to_string(), tq))
+            .build()
+            .expect("should build query request ok")
+    }
+}
+
+impl fmt::Display for QueryRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // generate sql based on query
+        let mut sql = "SELECT email, name FROM user_stats WHERE ".to_string();
+
+        let tm_str = self
+            .timestamps
+            .iter()
+            .map(|(k, v)| time_query(k, v.lower, v.upper))
+            .join(" AND ");
+
+        sql.push_str(&tm_str);
+
+        let id_str = self
+            .ids
+            .iter()
+            .map(|(k, v)| ids_query(k, &v.ids))
+            // use itertools::Itertools to join
+            .join(" AND ");
+
+        if !id_str.is_empty() {
+            sql.push_str(" AND ");
+            sql.push_str(&id_str);
+        }
+
+        info!("Generated sql: {}", sql);
+
+        write!(f, "{}", sql)
     }
 }
 
@@ -83,7 +114,7 @@ fn ts_to_utc(ts: Timestamp) -> DateTime<Utc> {
     Utc.timestamp_opt(ts.seconds, ts.nanos as u32).unwrap()
 }
 
-fn ids_query(name: &str, ids: Vec<u32>) -> String {
+fn ids_query(name: &str, ids: &[u32]) -> String {
     if ids.is_empty() {
         return "TRUE".to_string();
     }
@@ -100,7 +131,19 @@ mod tests {
         test_utils::{id, tq},
     };
     use anyhow::Result;
+    use chrono::Duration;
     use futures::StreamExt;
+
+    #[test]
+    fn query_request_to_string_should_work() {
+        let date = Utc.with_ymd_and_hms(2024, 1, 1, 0, 0, 0).unwrap();
+        let query = QueryRequest::new_with_dt("created_at", date, date + Duration::days(1));
+        let sql = query.to_string();
+        assert_eq!(
+            sql,
+            "SELECT email, name FROM user_stats WHERE created_at BETWEEN '2024-01-01 00:00:00' AND '2024-01-02 00:00:00'"
+        );
+    }
 
     #[tokio::test]
     async fn raw_query_should_work() -> Result<()> {

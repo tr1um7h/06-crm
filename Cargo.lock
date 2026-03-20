@@ -291,6 +291,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "crm-metadata",
  "crm-send",
  "derive_builder",
  "fake",
